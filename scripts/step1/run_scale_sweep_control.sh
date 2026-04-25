@@ -62,7 +62,7 @@ run_scale() {
   SCM_NOISE_STD="${SCM_NOISE_STD}" \
   MAX_STEPS="${MAX_STEPS}" \
   BATCH_SIZE="${BATCH_SIZE}" \
-  bash "${ROOT_DIR}/scripts/mb_study/run_same_seed_control.sh"
+  bash "${ROOT_DIR}/scripts/step1/run_same_seed_control.sh"
 }
 
 # small

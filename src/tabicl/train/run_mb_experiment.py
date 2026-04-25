@@ -6,6 +6,7 @@ import torch
 from torch import optim
 import torch.nn.functional as F
 
+from tabicl import InferenceConfig
 from tabicl.prior.synthetic_scm_mb import SyntheticSCMBatchDataset, smoke_test_synthetic_scm_mb
 from tabicl.train.mb_utils import (
     build_mb_predictor,
@@ -63,6 +64,11 @@ def main():
         n_query=config.n_query,
     )
     model = load_tabicl_model(config, strict=False)
+    inference_config = InferenceConfig(
+        COL_CONFIG={"device": config.device, "use_amp": config.amp, "verbose": False},
+        ROW_CONFIG={"device": config.device, "use_amp": config.amp, "verbose": False},
+        ICL_CONFIG={"device": config.device, "use_amp": config.amp, "verbose": False},
+    )
     predictor = None
     if config.mb_score_source == "predicted":
         predictor = build_mb_predictor(config, model)
@@ -122,7 +128,13 @@ def main():
             model.eval()
             with torch.no_grad():
                 logits, diagnostics = model(
-                    X, y_support, d=d, mb_scores=score_result.scores, return_mb_diagnostics=True, return_logits=True
+                    X,
+                    y_support,
+                    d=d,
+                    mb_scores=score_result.scores,
+                    return_mb_diagnostics=True,
+                    return_logits=True,
+                    inference_config=inference_config,
                 )
                 loss = F.cross_entropy(logits.reshape(-1, logits.shape[-1]), y_query.reshape(-1).long())
 
