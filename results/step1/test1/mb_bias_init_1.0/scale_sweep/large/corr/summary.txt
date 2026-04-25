@@ -1,0 +1,21 @@
+MB-TabICL Step1 Result: corr / cls_soft_bias
+============================================
+
+checkpoint_dir=/data0/hjx2024/lingyuhui2025/MB/MB1/results/step1/test1/mb_bias_init_1.0/scale_sweep/large/corr
+seed=42
+support=128
+query=128
+features=64
+mb_size=10
+
+step: 4
+train_mode: baseline
+mb_score_source: corr
+mb_injection: cls_soft_bias
+accuracy: 0.943359375
+balanced_accuracy: 0.9436749980891233
+log_loss: 0.14553200490091323
+roc_auc: 0.9884277306428189
+loss: 0.1453857421875
+mb_sparsity: 0.1328125
+mb_mean_score: 0.23982100188732147

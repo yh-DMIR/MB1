@@ -1,0 +1,13 @@
+{
+  "train_mode": "baseline",
+  "task_type": "classification",
+  "mb_score_source": "none",
+  "mb_injection": "none",
+  "scm_num_features": 16,
+  "scm_mb_size": 4,
+  "scm_num_samples": 64,
+  "n_support": 32,
+  "n_query": 32,
+  "seed": 42,
+  "device": "cuda:0"
+}

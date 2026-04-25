@@ -1,0 +1,7 @@
+accuracy,balanced_accuracy,case_dir,case_name,log_loss,loss,mb_injection,mb_mean_score,mb_score_source,mb_sparsity,roc_auc,step,train_mode
+0.921875,0.921875,/data0/hjx2024/lingyuhui2025/MB/MB1/results/step1/test1/mb_bias_init_1.0/scale_sweep/small/baseline,baseline,0.2190688399119572,0.2191162109375,none,0.0,none,0.0,0.97802734375,4,baseline
+0.9453125,0.9453125,/data0/hjx2024/lingyuhui2025/MB/MB1/results/step1/test1/mb_bias_init_1.0/scale_sweep/small/shuffled,shuffled,0.20482599605632873,0.204833984375,cls_soft_bias,0.25,shuffled,0.25,0.98046875,4,baseline
+0.9453125,0.9453125,/data0/hjx2024/lingyuhui2025/MB/MB1/results/step1/test1/mb_bias_init_1.0/scale_sweep/small/mi,mi,0.20037319377630006,0.2003173828125,cls_soft_bias,0.24047350883483887,mi,0.1875,0.981201171875,4,baseline
+0.9453125,0.9453125,/data0/hjx2024/lingyuhui2025/MB/MB1/results/step1/test1/mb_bias_init_1.0/scale_sweep/small/oracle,oracle,0.20351546828629116,0.2034912109375,cls_soft_bias,0.25,oracle,0.25,0.98095703125,4,baseline
+0.9453125,0.9453125,/data0/hjx2024/lingyuhui2025/MB/MB1/results/step1/test1/mb_bias_init_1.0/scale_sweep/small/corr,corr,0.19798304464449262,0.197998046875,cls_soft_bias,0.348420649766922,corr,0.296875,0.981201171875,4,baseline
+0.9453125,0.9453125,/data0/hjx2024/lingyuhui2025/MB/MB1/results/step1/test1/mb_bias_init_1.0/scale_sweep/small/random,random,0.20097751971294947,0.200927734375,cls_soft_bias,0.4466078281402588,random,0.40625,0.981201171875,4,baseline

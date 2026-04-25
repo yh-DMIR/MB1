@@ -1,0 +1,21 @@
+MB-TabICL Step1 Result: shuffled / cls_soft_bias
+================================================
+
+checkpoint_dir=/data0/hjx2024/lingyuhui2025/MB/MB1/results/step1/test1/mb_bias_init_1.0/scale_sweep/large/shuffled
+seed=42
+support=128
+query=128
+features=64
+mb_size=10
+
+step: 4
+train_mode: baseline
+mb_score_source: shuffled
+mb_injection: cls_soft_bias
+accuracy: 0.939453125
+balanced_accuracy: 0.9399296797370633
+log_loss: 0.1550273722502475
+roc_auc: 0.9871665520140641
+loss: 0.1549072265625
+mb_sparsity: 0.15625
+mb_mean_score: 0.15625
