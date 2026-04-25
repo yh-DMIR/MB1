@@ -95,14 +95,15 @@ run_scale() {
   bash "${ROOT_DIR}/scripts/step1/run_same_seed_control.sh"
 }
 
-# small
-run_scale small 32 32 16 4 4 2
+# talent-like small: rows/features are raised substantially vs the initial smoke setup,
+# while batch_size=1 keeps inference viable on a 10G GPU.
+run_scale small 128 128 32 8 8 4
 
-# medium
-run_scale medium 64 64 32 6 8 4
+# talent-like medium
+run_scale medium 256 256 64 12 16 8
 
-# large
-run_scale large 128 128 64 10 16 8
+# talent-like large, still kept below an aggressive 512x512x128 setup for 10G GPUs.
+run_scale large 384 384 96 16 24 12
 
 python "${ROOT_DIR}/src/tabicl/train/aggregate_step1_results.py" \
   --root_dir "${OUTPUT_DIR}" \

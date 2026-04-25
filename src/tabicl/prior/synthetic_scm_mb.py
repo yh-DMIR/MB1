@@ -37,6 +37,24 @@ def _apply_nonlinearity(values: torch.Tensor) -> torch.Tensor:
     return torch.tanh(values) + 0.25 * values.square() - 0.1 * values
 
 
+def _sample_mb_partition(scm_mb_size: int, generator: torch.Generator) -> tuple[int, int, int]:
+    """Sample a variable MB partition so different tasks can come from different DAG topologies."""
+
+    if scm_mb_size == 2:
+        return 1, 1, 0
+
+    max_parents = max(1, scm_mb_size - 1)
+    num_parents = int(torch.randint(1, max_parents + 1, (1,), generator=generator).item())
+    remaining = scm_mb_size - num_parents
+    if remaining <= 0:
+        num_parents = scm_mb_size - 1
+        remaining = 1
+
+    num_children = int(torch.randint(1, remaining + 1, (1,), generator=generator).item())
+    num_spouses = remaining - num_children
+    return num_parents, num_children, num_spouses
+
+
 def generate_scm_task(
     scm_num_features: int = 32,
     scm_mb_size: int = 6,
@@ -72,11 +90,7 @@ def generate_scm_task(
     generator = _ensure_generator(scm_seed)
     device = torch.device("cpu")
 
-    num_parents = max(1, scm_mb_size // 3)
-    num_children = max(1, (scm_mb_size - num_parents) // 2)
-    num_spouses = max(0, scm_mb_size - num_parents - num_children)
-    while num_parents + num_children + num_spouses > scm_mb_size:
-        num_children = max(1, num_children - 1)
+    num_parents, num_children, num_spouses = _sample_mb_partition(scm_mb_size, generator)
 
     mb_size = num_parents + num_children + num_spouses
     remaining = scm_num_features - mb_size
@@ -93,18 +107,45 @@ def generate_scm_task(
     parents = torch.randn(num_rows, num_parents, generator=generator, device=device)
     spouse_latents = torch.randn(num_rows, num_spouses, generator=generator, device=device)
 
-    parent_weights = torch.randn(num_parents, generator=generator, device=device)
-    y_latent = parents @ parent_weights
+    parent_weights = 0.5 + torch.rand(num_parents, generator=generator, device=device)
+    parent_sign = torch.where(
+        torch.rand(num_parents, generator=generator, device=device) > 0.5,
+        torch.ones(num_parents, device=device),
+        -torch.ones(num_parents, device=device),
+    )
+    y_latent = parents @ (parent_weights * parent_sign)
     if scm_nonlinear:
         y_latent = _apply_nonlinearity(y_latent)
     y_latent = y_latent + scm_noise_std * torch.randn(num_rows, generator=generator, device=device)
 
     children = []
+    child_parent_edges = []
+    child_spouse_edges = []
     for idx in range(num_children):
-        child = 0.8 * y_latent
+        y_coeff = 0.6 + 0.6 * torch.rand(1, generator=generator, device=device)
+        child = y_coeff * y_latent
+
+        parent_edge_mask = torch.zeros(num_parents, dtype=torch.float32, device=device)
+        num_parent_inputs = int(torch.randint(1, min(num_parents, 3) + 1, (1,), generator=generator).item())
+        parent_indices = _sample_without_replacement(num_parents, num_parent_inputs, generator)
+        parent_edge_mask[parent_indices] = 1.0
+        parent_weights_to_child = 0.15 + 0.35 * torch.rand(
+            num_parent_inputs, generator=generator, device=device
+        )
+        child = child + parents[:, parent_indices] @ parent_weights_to_child
+        child_parent_edges.append(parent_edge_mask)
+
+        spouse_edge_mask = torch.zeros(num_spouses, dtype=torch.float32, device=device)
         if num_spouses > 0:
-            spouse_idx = idx % num_spouses
-            child = child + 0.6 * spouse_latents[:, spouse_idx]
+            num_spouse_inputs = int(torch.randint(1, num_spouses + 1, (1,), generator=generator).item())
+            spouse_indices = _sample_without_replacement(num_spouses, num_spouse_inputs, generator)
+            spouse_edge_mask[spouse_indices] = 1.0
+            spouse_weights_to_child = 0.25 + 0.45 * torch.rand(
+                num_spouse_inputs, generator=generator, device=device
+            )
+            child = child + spouse_latents[:, spouse_indices] @ spouse_weights_to_child
+        child_spouse_edges.append(spouse_edge_mask)
+
         if scm_nonlinear:
             child = _apply_nonlinearity(child)
         child = child + scm_noise_std * torch.randn(num_rows, generator=generator, device=device)
@@ -179,6 +220,13 @@ def generate_scm_task(
         "num_redundant": redundant_dim,
         "num_noise": noise_dim,
         "seed": scm_seed if scm_seed is not None else -1,
+        "dag_parent_sign_sum": float(parent_sign.sum().item()),
+        "dag_child_parent_density": float(
+            torch.stack(child_parent_edges).mean().item() if child_parent_edges else 0.0
+        ),
+        "dag_child_spouse_density": float(
+            torch.stack(child_spouse_edges).mean().item() if child_spouse_edges else 0.0
+        ),
     }
 
     return SyntheticSCMTask(
