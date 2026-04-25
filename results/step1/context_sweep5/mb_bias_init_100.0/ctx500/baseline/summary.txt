@@ -1,0 +1,23 @@
+MB-TabICL Step1 Result: none / none
+===================================
+
+checkpoint_dir=results/step1/context_sweep5/mb_bias_init_100.0/ctx500/baseline
+seed=42
+support=256
+query=256
+features=48
+mb_size=12
+eval_num_datasets=30
+
+accuracy: 0.9466145833333334
+balanced_accuracy: 0.9467555484665372
+log_loss: 0.12773010556351244
+loss: 0.12744344075520833
+mb_mean_score: 0.0
+mb_sparsity: 0.0
+roc_auc: 0.9900997876009971
+num_datasets: 30
+aggregation: mean_over_datasets
+train_mode: baseline
+mb_score_source: none
+mb_injection: none

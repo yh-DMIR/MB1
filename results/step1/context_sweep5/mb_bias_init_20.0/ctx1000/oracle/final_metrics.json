@@ -1,0 +1,13 @@
+{
+  "step": 29,
+  "train_mode": "baseline",
+  "mb_score_source": "oracle",
+  "mb_injection": "cls_soft_bias",
+  "accuracy": 0.98046875,
+  "balanced_accuracy": 0.9811597748960117,
+  "log_loss": 0.044596519931826145,
+  "roc_auc": 0.9991895033031564,
+  "loss": 0.043853759765625,
+  "mb_sparsity": 0.25,
+  "mb_mean_score": 0.25
+}

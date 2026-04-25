@@ -1,0 +1,7 @@
+accuracy,aggregation,balanced_accuracy,case_dir,case_name,log_loss,loss,mb_injection,mb_mean_score,mb_score_source,mb_sparsity,num_datasets,roc_auc,train_mode
+0.969921875,mean_over_datasets,0.9699088560136536,results/step1/context_sweep5/mb_bias_init_50.0/ctx3000/baseline,baseline,0.07164987612657785,0.07100931803385417,none,0.0,none,0.0,30,0.9966350115916622,baseline
+0.9375,mean_over_datasets,0.9375019802020658,results/step1/context_sweep5/mb_bias_init_50.0/ctx3000/shuffled,shuffled,0.14652880017569683,0.1466064453125,cls_soft_bias,0.25,shuffled,0.25,30,0.9831823673225843,baseline
+0.9498372395833333,mean_over_datasets,0.9497691203008858,results/step1/context_sweep5/mb_bias_init_50.0/ctx3000/mi,mi,0.11986941803319467,0.119769287109375,cls_soft_bias,0.09970572007199129,mi,0.08500000151495139,30,0.9879668640174664,baseline
+0.9755208333333333,mean_over_datasets,0.975491242132966,results/step1/context_sweep5/mb_bias_init_50.0/ctx3000/oracle,oracle,0.058400638924341455,0.05763880411783854,cls_soft_bias,0.25,oracle,0.25,30,0.9975245479888646,baseline
+0.9568684895833334,mean_over_datasets,0.9568662054404977,results/step1/context_sweep5/mb_bias_init_50.0/ctx3000/corr,corr,0.1071642340618381,0.10747273763020833,cls_soft_bias,0.20741521765788395,corr,0.10500000187506278,30,0.9911067408982067,baseline
+0.9399739583333333,mean_over_datasets,0.9400119237233718,results/step1/context_sweep5/mb_bias_init_50.0/ctx3000/random,random,0.14187735305522936,0.14181925455729166,cls_soft_bias,0.4408135414123535,random,0.38750001788139343,30,0.985519417253243,baseline

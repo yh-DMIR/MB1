@@ -1,0 +1,23 @@
+MB-TabICL Step1 Result: mi / cls_soft_bias
+==========================================
+
+checkpoint_dir=results/step1/context_sweep5/mb_bias_init_5.0/ctx3000/mi
+seed=42
+support=1024
+query=1024
+features=80
+mb_size=20
+eval_num_datasets=30
+
+accuracy: 0.9673177083333333
+balanced_accuracy: 0.9672990242055636
+log_loss: 0.0763029455981933
+loss: 0.07572224934895834
+mb_mean_score: 0.09970559092859427
+mb_sparsity: 0.08500000151495139
+roc_auc: 0.9960911188758936
+num_datasets: 30
+aggregation: mean_over_datasets
+train_mode: baseline
+mb_score_source: mi
+mb_injection: cls_soft_bias

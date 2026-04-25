@@ -1,0 +1,23 @@
+MB-TabICL Step1 Result: none / none
+===================================
+
+checkpoint_dir=results/step1/test1_dag30_talentlike/mb_bias_init_4.0/scale_sweep/large/baseline
+seed=42
+support=384
+query=384
+features=96
+mb_size=16
+eval_num_datasets=30
+
+accuracy: 0.9528645833333332
+balanced_accuracy: 0.9529401657826638
+log_loss: 0.1133415436131138
+loss: 0.11296488444010416
+mb_mean_score: 0.0
+mb_sparsity: 0.0
+roc_auc: 0.9924154640450591
+num_datasets: 30
+aggregation: mean_over_datasets
+train_mode: baseline
+mb_score_source: none
+mb_injection: none

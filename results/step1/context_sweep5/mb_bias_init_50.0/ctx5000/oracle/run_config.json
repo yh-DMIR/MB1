@@ -1,0 +1,14 @@
+{
+  "train_mode": "baseline",
+  "task_type": "classification",
+  "mb_score_source": "oracle",
+  "mb_injection": "cls_soft_bias",
+  "scm_num_features": 112,
+  "scm_mb_size": 28,
+  "scm_num_samples": 8192,
+  "n_support": 4096,
+  "n_query": 4096,
+  "seed": 42,
+  "device": "cuda:0",
+  "eval_num_datasets": 30
+}

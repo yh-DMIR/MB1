@@ -1,0 +1,23 @@
+MB-TabICL Step1 Result: oracle / cls_soft_bias
+==============================================
+
+checkpoint_dir=results/step1/context_sweep5/mb_bias_init_1000.0/ctx500/oracle
+seed=42
+support=256
+query=256
+features=48
+mb_size=12
+eval_num_datasets=30
+
+accuracy: 0.9625
+balanced_accuracy: 0.9625377657615651
+log_loss: 0.08794786669598606
+loss: 0.087359619140625
+mb_mean_score: 0.25
+mb_sparsity: 0.25
+roc_auc: 0.995411605444015
+num_datasets: 30
+aggregation: mean_over_datasets
+train_mode: baseline
+mb_score_source: oracle
+mb_injection: cls_soft_bias

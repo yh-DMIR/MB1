@@ -1,0 +1,23 @@
+MB-TabICL Step1 Result: shuffled / cls_soft_bias
+================================================
+
+checkpoint_dir=results/step1/context_sweep5/mb_bias_init_2.0/ctx500/shuffled
+seed=42
+support=256
+query=256
+features=48
+mb_size=12
+eval_num_datasets=30
+
+accuracy: 0.9471354166666667
+balanced_accuracy: 0.9472953509796707
+log_loss: 0.12101625859083952
+loss: 0.12067667643229167
+mb_mean_score: 0.25
+mb_sparsity: 0.25
+roc_auc: 0.9911608136083914
+num_datasets: 30
+aggregation: mean_over_datasets
+train_mode: baseline
+mb_score_source: shuffled
+mb_injection: cls_soft_bias
