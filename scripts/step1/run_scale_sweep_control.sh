@@ -13,13 +13,15 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 export PYTHONPATH="${ROOT_DIR}/src:${PYTHONPATH:-}"
 
-OUTPUT_DIR="${OUTPUT_DIR:-${ROOT_DIR}/results/step1/test1/scale_sweep}"
+OUTPUT_DIR="${OUTPUT_DIR:-${ROOT_DIR}/results/step1/test1/mb_bias_init_1.0/scale_sweep}"
 SEED="${SEED:-42}"
 DEVICE="${DEVICE:-cpu}"
 CHECKPOINT_PATH="${CHECKPOINT_PATH:-}"
 TABICL_VERSION="${TABICL_VERSION:-v1.0}"
 TABICL_CKPT_V10="${TABICL_CKPT_V10:-${ROOT_DIR}/ckpt/tabicl-classifier-v1-0208.ckpt}"
 TABICL_CKPT_V11="${TABICL_CKPT_V11:-${ROOT_DIR}/ckpt/tabicl-classifier-v1.1-0506.ckpt}"
+MB_BIAS_INIT="${MB_BIAS_INIT:-1.0}"
+MB_BIAS_TRAINABLE="${MB_BIAS_TRAINABLE:-False}"
 
 if [[ -n "${CHECKPOINT_PATH}" ]]; then
   TABICL_CKPT="${TABICL_CKPT:-${CHECKPOINT_PATH}}"
@@ -64,6 +66,7 @@ run_scale() {
   echo "Running scale=${SCALE_NAME}"
   echo "support=${N_SUPPORT} query=${N_QUERY} features=${SCM_NUM_FEATURES} mb_size=${SCM_MB_SIZE}"
   echo "tabicl_ckpt=${TABICL_CKPT}"
+  echo "mb_bias_init=${MB_BIAS_INIT} mb_bias_trainable=${MB_BIAS_TRAINABLE}"
   echo "############################################################"
 
   OUTPUT_DIR="${SCALE_OUT}" \
@@ -71,6 +74,8 @@ run_scale() {
   DEVICE="${DEVICE}" \
   TABICL_CKPT="${TABICL_CKPT}" \
   MB_PREDICTOR_CKPT="${MB_PREDICTOR_CKPT}" \
+  MB_BIAS_INIT="${MB_BIAS_INIT}" \
+  MB_BIAS_TRAINABLE="${MB_BIAS_TRAINABLE}" \
   TASK_TYPE="${TASK_TYPE}" \
   N_SUPPORT="${N_SUPPORT}" \
   N_QUERY="${N_QUERY}" \

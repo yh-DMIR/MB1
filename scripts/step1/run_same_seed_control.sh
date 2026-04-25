@@ -16,13 +16,15 @@ export PYTHONPATH="${ROOT_DIR}/src:${PYTHONPATH:-}"
 
 DATASET="${DATASET:-synthetic_scm_mb}"
 DATA_PATH="${DATA_PATH:-}"
-OUTPUT_DIR="${OUTPUT_DIR:-${ROOT_DIR}/results/step1/test1/same_seed_control}"
+OUTPUT_DIR="${OUTPUT_DIR:-${ROOT_DIR}/results/step1/test1/mb_bias_init_1.0/same_seed_control}"
 SEED="${SEED:-42}"
 DEVICE="${DEVICE:-cpu}"
 CHECKPOINT_PATH="${CHECKPOINT_PATH:-}"
 TABICL_VERSION="${TABICL_VERSION:-v1.0}"
 TABICL_CKPT_V10="${TABICL_CKPT_V10:-${ROOT_DIR}/ckpt/tabicl-classifier-v1-0208.ckpt}"
 TABICL_CKPT_V11="${TABICL_CKPT_V11:-${ROOT_DIR}/ckpt/tabicl-classifier-v1.1-0506.ckpt}"
+MB_BIAS_INIT="${MB_BIAS_INIT:-1.0}"
+MB_BIAS_TRAINABLE="${MB_BIAS_TRAINABLE:-False}"
 
 if [[ -n "${CHECKPOINT_PATH}" ]]; then
   TABICL_CKPT="${TABICL_CKPT:-${CHECKPOINT_PATH}}"
@@ -75,6 +77,7 @@ run_case() {
   echo "Running case=${CASE_NAME}"
   echo "seed=${SEED} features=${SCM_NUM_FEATURES} samples=${SCM_NUM_SAMPLES} support=${N_SUPPORT} query=${N_QUERY}"
   echo "tabicl_ckpt=${TABICL_CKPT}"
+  echo "mb_bias_init=${MB_BIAS_INIT} mb_bias_trainable=${MB_BIAS_TRAINABLE}"
   echo "mb_score_source=${MB_SOURCE} mb_injection=${MB_INJECTION}"
   echo "output_dir=${CASE_OUT}"
   echo "============================================================"
@@ -99,6 +102,8 @@ run_case() {
     --scm_nonlinear "${SCM_NONLINEAR}" \
     --scm_num_classes "${SCM_NUM_CLASSES}" \
     --scm_noise_std "${SCM_NOISE_STD}" \
+    --mb_bias_init "${MB_BIAS_INIT}" \
+    --mb_bias_trainable "${MB_BIAS_TRAINABLE}" \
     --mb_score_source "${MB_SOURCE}" \
     --mb_injection "${MB_INJECTION}"
 }
