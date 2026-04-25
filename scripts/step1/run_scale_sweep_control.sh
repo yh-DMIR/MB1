@@ -16,7 +16,20 @@ OUTPUT_DIR="${OUTPUT_DIR:-${ROOT_DIR}/results/step1/test1/scale_sweep}"
 SEED="${SEED:-42}"
 DEVICE="${DEVICE:-cpu}"
 CHECKPOINT_PATH="${CHECKPOINT_PATH:-}"
-TABICL_CKPT="${TABICL_CKPT:-${CHECKPOINT_PATH}}"
+TABICL_VERSION="${TABICL_VERSION:-v1.0}"
+TABICL_CKPT_V10="${TABICL_CKPT_V10:-${ROOT_DIR}/ckpt/tabicl-classifier-v1-0208.ckpt}"
+TABICL_CKPT_V11="${TABICL_CKPT_V11:-${ROOT_DIR}/ckpt/tabicl-classifier-v1.1-0506.ckpt}"
+
+if [[ -n "${CHECKPOINT_PATH}" ]]; then
+  TABICL_CKPT="${TABICL_CKPT:-${CHECKPOINT_PATH}}"
+elif [[ -n "${TABICL_CKPT:-}" ]]; then
+  TABICL_CKPT="${TABICL_CKPT}"
+elif [[ "${TABICL_VERSION}" == "v1.1" ]]; then
+  TABICL_CKPT="${TABICL_CKPT_V11}"
+else
+  TABICL_CKPT="${TABICL_CKPT_V10}"
+fi
+
 MB_PREDICTOR_CKPT="${MB_PREDICTOR_CKPT:-}"
 TASK_TYPE="${TASK_TYPE:-classification}"
 MAX_STEPS="${MAX_STEPS:-5}"
@@ -26,6 +39,13 @@ SCM_NUM_CLASSES="${SCM_NUM_CLASSES:-2}"
 SCM_NOISE_STD="${SCM_NOISE_STD:-0.1}"
 
 mkdir -p "${OUTPUT_DIR}"
+
+if [[ ! -f "${TABICL_CKPT}" ]]; then
+  echo "ERROR: TabICL checkpoint not found: ${TABICL_CKPT}"
+  echo "Run: bash ${ROOT_DIR}/scripts/step1/download_tabicl_ckpts.sh"
+  echo "Or set TABICL_CKPT=/path/to/your/checkpoint.ckpt"
+  exit 1
+fi
 
 run_scale() {
   local SCALE_NAME="$1"
@@ -42,6 +62,7 @@ run_scale() {
   echo "############################################################"
   echo "Running scale=${SCALE_NAME}"
   echo "support=${N_SUPPORT} query=${N_QUERY} features=${SCM_NUM_FEATURES} mb_size=${SCM_MB_SIZE}"
+  echo "tabicl_ckpt=${TABICL_CKPT}"
   echo "############################################################"
 
   OUTPUT_DIR="${SCALE_OUT}" \

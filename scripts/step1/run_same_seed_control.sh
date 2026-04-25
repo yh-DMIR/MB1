@@ -20,7 +20,20 @@ OUTPUT_DIR="${OUTPUT_DIR:-${ROOT_DIR}/results/step1/test1/same_seed_control}"
 SEED="${SEED:-42}"
 DEVICE="${DEVICE:-cpu}"
 CHECKPOINT_PATH="${CHECKPOINT_PATH:-}"
-TABICL_CKPT="${TABICL_CKPT:-${CHECKPOINT_PATH}}"
+TABICL_VERSION="${TABICL_VERSION:-v1.0}"
+TABICL_CKPT_V10="${TABICL_CKPT_V10:-${ROOT_DIR}/ckpt/tabicl-classifier-v1-0208.ckpt}"
+TABICL_CKPT_V11="${TABICL_CKPT_V11:-${ROOT_DIR}/ckpt/tabicl-classifier-v1.1-0506.ckpt}"
+
+if [[ -n "${CHECKPOINT_PATH}" ]]; then
+  TABICL_CKPT="${TABICL_CKPT:-${CHECKPOINT_PATH}}"
+elif [[ -n "${TABICL_CKPT:-}" ]]; then
+  TABICL_CKPT="${TABICL_CKPT}"
+elif [[ "${TABICL_VERSION}" == "v1.1" ]]; then
+  TABICL_CKPT="${TABICL_CKPT_V11}"
+else
+  TABICL_CKPT="${TABICL_CKPT_V10}"
+fi
+
 MB_PREDICTOR_CKPT="${MB_PREDICTOR_CKPT:-}"
 TASK_TYPE="${TASK_TYPE:-classification}"
 N_SUPPORT="${N_SUPPORT:-64}"
@@ -41,6 +54,14 @@ MAX_STEPS="${MAX_STEPS:-5}"
 BATCH_SIZE="${BATCH_SIZE:-4}"
 
 mkdir -p "${OUTPUT_DIR}"
+mkdir -p "${ROOT_DIR}/ckpt"
+
+if [[ ! -f "${TABICL_CKPT}" ]]; then
+  echo "ERROR: TabICL checkpoint not found: ${TABICL_CKPT}"
+  echo "Run: bash ${ROOT_DIR}/scripts/step1/download_tabicl_ckpts.sh"
+  echo "Or set TABICL_CKPT=/path/to/your/checkpoint.ckpt"
+  exit 1
+fi
 
 run_case() {
   local CASE_NAME="$1"
@@ -53,6 +74,7 @@ run_case() {
   echo "============================================================"
   echo "Running case=${CASE_NAME}"
   echo "seed=${SEED} features=${SCM_NUM_FEATURES} samples=${SCM_NUM_SAMPLES} support=${N_SUPPORT} query=${N_QUERY}"
+  echo "tabicl_ckpt=${TABICL_CKPT}"
   echo "mb_score_source=${MB_SOURCE} mb_injection=${MB_INJECTION}"
   echo "output_dir=${CASE_OUT}"
   echo "============================================================"
