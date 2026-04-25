@@ -35,8 +35,9 @@ fi
 
 MB_PREDICTOR_CKPT="${MB_PREDICTOR_CKPT:-}"
 TASK_TYPE="${TASK_TYPE:-classification}"
-MAX_STEPS="${MAX_STEPS:-5}"
-BATCH_SIZE="${BATCH_SIZE:-4}"
+NUM_DATASETS="${NUM_DATASETS:-30}"
+MAX_STEPS="${MAX_STEPS:-${NUM_DATASETS}}"
+BATCH_SIZE="${BATCH_SIZE:-1}"
 SCM_NONLINEAR="${SCM_NONLINEAR:-False}"
 SCM_NUM_CLASSES="${SCM_NUM_CLASSES:-2}"
 SCM_NOISE_STD="${SCM_NOISE_STD:-0.1}"
@@ -66,6 +67,7 @@ run_scale() {
   echo "Running scale=${SCALE_NAME}"
   echo "support=${N_SUPPORT} query=${N_QUERY} features=${SCM_NUM_FEATURES} mb_size=${SCM_MB_SIZE}"
   echo "tabicl_ckpt=${TABICL_CKPT}"
+  echo "num_datasets=${NUM_DATASETS}"
   echo "mb_bias_init=${MB_BIAS_INIT} mb_bias_trainable=${MB_BIAS_TRAINABLE}"
   echo "############################################################"
 
@@ -74,6 +76,7 @@ run_scale() {
   DEVICE="${DEVICE}" \
   TABICL_CKPT="${TABICL_CKPT}" \
   MB_PREDICTOR_CKPT="${MB_PREDICTOR_CKPT}" \
+  NUM_DATASETS="${NUM_DATASETS}" \
   MB_BIAS_INIT="${MB_BIAS_INIT}" \
   MB_BIAS_TRAINABLE="${MB_BIAS_TRAINABLE}" \
   TASK_TYPE="${TASK_TYPE}" \

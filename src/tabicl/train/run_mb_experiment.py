@@ -34,6 +34,26 @@ def _save_checkpoint(model, path: str, extra: dict | None = None):
     torch.save(payload, path)
 
 
+def _average_history(history: list[dict]) -> dict:
+    if not history:
+        return {}
+
+    excluded = {"step", "train_mode", "mb_score_source", "mb_injection"}
+    metric_keys = sorted({key for row in history for key in row.keys() if key not in excluded})
+    averaged = {}
+    for key in metric_keys:
+        values = [float(row[key]) for row in history if key in row]
+        if values:
+            averaged[key] = float(sum(values) / len(values))
+
+    averaged["num_datasets"] = len(history)
+    averaged["aggregation"] = "mean_over_datasets"
+    averaged["train_mode"] = history[-1]["train_mode"]
+    averaged["mb_score_source"] = history[-1]["mb_score_source"]
+    averaged["mb_injection"] = history[-1]["mb_injection"]
+    return averaged
+
+
 def main():
     parser = build_parser()
     config = parser.parse_args()
@@ -95,10 +115,12 @@ def main():
     os.makedirs(case_dir, exist_ok=True)
     metrics_history = []
     last_metrics = {}
+    aggregate_metrics = {}
     last_feature_scores = None
     last_oracle_labels = None
+    num_eval_steps = config.eval_num_datasets if config.eval_num_datasets > 0 else max(1, config.max_steps)
 
-    for step in range(max(1, config.max_steps)):
+    for step in range(num_eval_steps):
         batch = next(iter(dataset))
         split_batch = split_support_query(batch)
         X = split_batch["X"].to(config.device)
@@ -179,13 +201,22 @@ def main():
         last_feature_scores = score_result.scores.detach().mean(dim=0).cpu().tolist()
         last_oracle_labels = mb_labels.detach().float().mean(dim=0).cpu().tolist()
 
-        if step % max(1, config.save_temp_every) == 0 or step == config.max_steps - 1:
+        if step % max(1, config.save_temp_every) == 0 or step == num_eval_steps - 1:
             print(f"step={step} mode={config.train_mode} source={config.mb_score_source} injection={config.mb_injection}")
             for key, value in metrics.items():
                 print(f"  {key}: {value:.6f}")
             if optimizer is not None:
                 ckpt_path = os.path.join(config.checkpoint_dir or "checkpoints", f"mb_calibrator_step_{step}.ckpt")
                 _save_checkpoint(model, ckpt_path, extra={"step": step, "metrics": metrics})
+
+    aggregate_metrics = _average_history(metrics_history)
+    if aggregate_metrics:
+        print("aggregate metrics across datasets:")
+        for key, value in aggregate_metrics.items():
+            if isinstance(value, (int, float)) and key not in {"num_datasets"}:
+                print(f"  {key}: {value:.6f}")
+            else:
+                print(f"  {key}: {value}")
 
     save_json(
         case_dir / "run_config.json",
@@ -201,15 +232,18 @@ def main():
             "n_query": config.n_query,
             "seed": config.scm_seed,
             "device": config.device,
+            "eval_num_datasets": config.eval_num_datasets,
         },
     )
     save_json(case_dir / "smoke_test.json", smoke)
     save_json(case_dir / "final_metrics.json", last_metrics)
+    if aggregate_metrics:
+        save_json(case_dir / "aggregate_metrics.json", aggregate_metrics)
     save_metrics_history_csv(case_dir / "metrics_history.csv", metrics_history)
     save_text_summary(
         case_dir / "summary.txt",
         title=f"MB-TabICL Step1 Result: {config.mb_score_source} / {config.mb_injection}",
-        metrics=last_metrics,
+        metrics=aggregate_metrics if aggregate_metrics else last_metrics,
         extra_lines=[
             f"checkpoint_dir={case_dir}",
             f"seed={config.scm_seed}",
@@ -217,6 +251,7 @@ def main():
             f"query={config.n_query}",
             f"features={config.scm_num_features}",
             f"mb_size={config.scm_mb_size}",
+            f"eval_num_datasets={config.eval_num_datasets or 1}",
         ],
     )
     save_metric_curves(

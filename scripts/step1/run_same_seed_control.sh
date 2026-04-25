@@ -52,8 +52,9 @@ SCM_NUM_CLASSES="${SCM_NUM_CLASSES:-2}"
 SCM_NOISE_STD="${SCM_NOISE_STD:-0.1}"
 
 # 运行步数
-MAX_STEPS="${MAX_STEPS:-5}"
-BATCH_SIZE="${BATCH_SIZE:-4}"
+NUM_DATASETS="${NUM_DATASETS:-30}"
+MAX_STEPS="${MAX_STEPS:-${NUM_DATASETS}}"
+BATCH_SIZE="${BATCH_SIZE:-1}"
 
 mkdir -p "${OUTPUT_DIR}"
 mkdir -p "${ROOT_DIR}/ckpt"
@@ -77,6 +78,7 @@ run_case() {
   echo "Running case=${CASE_NAME}"
   echo "seed=${SEED} features=${SCM_NUM_FEATURES} samples=${SCM_NUM_SAMPLES} support=${N_SUPPORT} query=${N_QUERY}"
   echo "tabicl_ckpt=${TABICL_CKPT}"
+  echo "num_datasets=${NUM_DATASETS}"
   echo "mb_bias_init=${MB_BIAS_INIT} mb_bias_trainable=${MB_BIAS_TRAINABLE}"
   echo "mb_score_source=${MB_SOURCE} mb_injection=${MB_INJECTION}"
   echo "output_dir=${CASE_OUT}"
@@ -92,6 +94,7 @@ run_case() {
     --checkpoint_dir "${CASE_OUT}" \
     --batch_size "${BATCH_SIZE}" \
     --max_steps "${MAX_STEPS}" \
+    --eval_num_datasets "${NUM_DATASETS}" \
     --n_support "${N_SUPPORT}" \
     --n_query "${N_QUERY}" \
     --scm_num_features "${SCM_NUM_FEATURES}" \

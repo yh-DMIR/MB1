@@ -56,6 +56,12 @@ def build_parser():
     parser.add_argument("--np_seed", type=int, default=42, help="Random seed for numpy")
     parser.add_argument("--torch_seed", type=int, default=42, help="Random seed for torch")
     parser.add_argument("--max_steps", type=int, default=60000, help="Training steps")
+    parser.add_argument(
+        "--eval_num_datasets",
+        type=int,
+        default=0,
+        help="If > 0, evaluate this many synthetic tasks and report mean metrics across tasks.",
+    )
     parser.add_argument("--batch_size", type=int, default=512, help="Batch size")
     parser.add_argument(
         "--micro_batch_size", type=int, default=8, help="Size of micro-batches for gradient accumulation"

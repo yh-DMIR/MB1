@@ -110,7 +110,10 @@ def load_json(path: str | Path) -> Dict:
 def aggregate_case_summaries(root_dir: str | Path) -> List[Dict]:
     root_dir = Path(root_dir)
     summaries = []
-    for path in root_dir.rglob("final_metrics.json"):
+    metric_paths = list(root_dir.rglob("aggregate_metrics.json"))
+    if not metric_paths:
+        metric_paths = list(root_dir.rglob("final_metrics.json"))
+    for path in metric_paths:
         metrics = load_json(path)
         metrics["case_dir"] = str(path.parent)
         summaries.append(metrics)
@@ -153,11 +156,14 @@ def save_case_comparison_plot(path: str | Path, rows: List[Dict], metric_name: s
 def aggregate_scale_rows(root_dir: str | Path) -> List[Dict]:
     root_dir = Path(root_dir)
     rows = []
-    for final_json in root_dir.rglob("final_metrics.json"):
-        parent = final_json.parent
+    metric_paths = list(root_dir.rglob("aggregate_metrics.json"))
+    if not metric_paths:
+        metric_paths = list(root_dir.rglob("final_metrics.json"))
+    for metric_json in metric_paths:
+        parent = metric_json.parent
         case_name = parent.name
         scale_name = parent.parent.name if parent.parent != root_dir else "default"
-        metrics = load_json(final_json)
+        metrics = load_json(metric_json)
         metrics["case_name"] = case_name
         metrics["scale_name"] = scale_name
         metrics["case_dir"] = str(parent)
@@ -195,4 +201,3 @@ def save_grouped_scale_plot(path: str | Path, rows: List[Dict], metric_name: str
     fig.tight_layout()
     fig.savefig(path, dpi=160, bbox_inches="tight")
     plt.close(fig)
-
