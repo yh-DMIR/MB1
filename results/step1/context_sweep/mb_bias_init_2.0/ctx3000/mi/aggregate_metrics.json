@@ -1,0 +1,14 @@
+{
+  "accuracy": 0.9672526041666667,
+  "balanced_accuracy": 0.9672775334983544,
+  "log_loss": 0.07461774120168256,
+  "loss": 0.07397359212239583,
+  "mb_mean_score": 0.10705941667159398,
+  "mb_sparsity": 0.08402778034408888,
+  "roc_auc": 0.996550893309743,
+  "num_datasets": 30,
+  "aggregation": "mean_over_datasets",
+  "train_mode": "baseline",
+  "mb_score_source": "mi",
+  "mb_injection": "cls_soft_bias"
+}

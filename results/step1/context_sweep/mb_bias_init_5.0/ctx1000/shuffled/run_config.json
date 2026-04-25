@@ -1,0 +1,14 @@
+{
+  "train_mode": "baseline",
+  "task_type": "classification",
+  "mb_score_source": "shuffled",
+  "mb_injection": "cls_soft_bias",
+  "scm_num_features": 48,
+  "scm_mb_size": 12,
+  "scm_num_samples": 1024,
+  "n_support": 512,
+  "n_query": 512,
+  "seed": 42,
+  "device": "cuda:0",
+  "eval_num_datasets": 30
+}
