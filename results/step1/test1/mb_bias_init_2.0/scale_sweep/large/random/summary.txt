@@ -1,0 +1,23 @@
+MB-TabICL Step1 Result: random / cls_soft_bias
+==============================================
+
+checkpoint_dir=results/step1/test1/mb_bias_init_2.0/scale_sweep/large/random
+seed=42
+support=128
+query=128
+features=64
+mb_size=10
+eval_num_datasets=30
+
+accuracy: 0.9296875
+balanced_accuracy: 0.9296604434390334
+log_loss: 0.16240738020306725
+loss: 0.16222025553385416
+mb_mean_score: 0.435289204120636
+mb_sparsity: 0.375
+roc_auc: 0.9848592917547884
+num_datasets: 30
+aggregation: mean_over_datasets
+train_mode: baseline
+mb_score_source: random
+mb_injection: cls_soft_bias

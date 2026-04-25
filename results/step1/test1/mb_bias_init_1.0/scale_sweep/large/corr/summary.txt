@@ -7,15 +7,17 @@ support=128
 query=128
 features=64
 mb_size=10
+eval_num_datasets=30
 
-step: 4
+accuracy: 0.928125
+balanced_accuracy: 0.9281958876990871
+log_loss: 0.16184826063999744
+loss: 0.16169637044270832
+mb_mean_score: 0.24652931441863377
+mb_sparsity: 0.14635416666666667
+roc_auc: 0.9847536455065592
+num_datasets: 30
+aggregation: mean_over_datasets
 train_mode: baseline
 mb_score_source: corr
 mb_injection: cls_soft_bias
-accuracy: 0.943359375
-balanced_accuracy: 0.9436749980891233
-log_loss: 0.14553200490091323
-roc_auc: 0.9884277306428189
-loss: 0.1453857421875
-mb_sparsity: 0.1328125
-mb_mean_score: 0.23982100188732147
