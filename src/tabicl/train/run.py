@@ -4,6 +4,7 @@ import os
 import timeit
 import warnings
 import functools
+import pickle
 from contextlib import nullcontext
 
 import math
@@ -30,6 +31,19 @@ from tabicl.train.train_config import build_parser
 warnings.filterwarnings(
     "ignore", message=".*The PyTorch API of nested tensors is in prototype stage.*", category=UserWarning
 )
+
+
+def load_checkpoint_compat(ckpt_path: str, map_location: str | torch.device):
+    """Load checkpoints compatibly across PyTorch versions."""
+
+    try:
+        return torch.load(ckpt_path, map_location=map_location, weights_only=True)
+    except pickle.UnpicklingError:
+        print(
+            f"weights_only=True failed for checkpoint {ckpt_path}. "
+            "Falling back to weights_only=False for a trusted checkpoint."
+        )
+        return torch.load(ckpt_path, map_location=map_location, weights_only=False)
 
 
 class Timer:
@@ -339,7 +353,7 @@ class Trainer:
             return
 
         print(f"Loading checkpoint from {checkpoint_path}")
-        checkpoint = torch.load(checkpoint_path, map_location=self.config.device, weights_only=True)
+        checkpoint = load_checkpoint_compat(checkpoint_path, map_location=self.config.device)
 
         # Load model state
         if "state_dict" not in checkpoint:

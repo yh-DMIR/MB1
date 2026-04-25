@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import pickle
 from typing import Dict, Optional
 
 import numpy as np
@@ -22,6 +23,27 @@ import torch.nn.functional as F
 from tabicl import TabICL
 from tabicl.model.mb_injection import MBScoreProvider
 from tabicl.model.mb_predictor import MultiViewMBPredictor
+
+
+def load_checkpoint_compat(ckpt_path: str, map_location: str | torch.device):
+    """Load checkpoints compatibly across PyTorch versions.
+
+    PyTorch 2.6 changed the default of `weights_only` to True. Official TabICL
+    checkpoints contain extra pickled metadata such as config dicts, so loading
+    them may fail under `weights_only=True`.
+
+    We first try the safe path, then fall back to `weights_only=False` only for
+    trusted checkpoints.
+    """
+
+    try:
+        return torch.load(ckpt_path, map_location=map_location, weights_only=True)
+    except pickle.UnpicklingError:
+        print(
+            f"weights_only=True failed for checkpoint {ckpt_path}. "
+            "Falling back to weights_only=False for a trusted checkpoint."
+        )
+        return torch.load(ckpt_path, map_location=map_location, weights_only=False)
 
 
 def build_model_config(config) -> Dict[str, object]:
@@ -62,7 +84,7 @@ def load_tabicl_model(config, strict: bool = True) -> TabICL:
 
     ckpt_path = config.tabicl_checkpoint_path or config.checkpoint_path
     if ckpt_path and os.path.exists(ckpt_path):
-        checkpoint = torch.load(ckpt_path, map_location=config.device, weights_only=True)
+        checkpoint = load_checkpoint_compat(ckpt_path, map_location=config.device)
         missing, unexpected = model.load_state_dict(checkpoint["state_dict"], strict=strict)
         if not strict:
             if missing:
@@ -119,7 +141,7 @@ def build_mb_predictor(config, model: TabICL) -> MultiViewMBPredictor:
     predictor.to(config.device)
 
     if config.mb_predictor_checkpoint_path and os.path.exists(config.mb_predictor_checkpoint_path):
-        checkpoint = torch.load(config.mb_predictor_checkpoint_path, map_location=config.device, weights_only=True)
+        checkpoint = load_checkpoint_compat(config.mb_predictor_checkpoint_path, map_location=config.device)
         state_dict = checkpoint["state_dict"] if "state_dict" in checkpoint else checkpoint
         predictor.load_state_dict(state_dict, strict=True)
     return predictor
