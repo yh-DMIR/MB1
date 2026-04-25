@@ -11,6 +11,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+export PYTHONPATH="${ROOT_DIR}/src:${PYTHONPATH:-}"
 
 OUTPUT_DIR="${OUTPUT_DIR:-${ROOT_DIR}/results/step1/test1/scale_sweep}"
 SEED="${SEED:-42}"
