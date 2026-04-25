@@ -1,0 +1,21 @@
+MB-TabICL Step1 Result: oracle / cls_soft_bias
+==============================================
+
+checkpoint_dir=results/step1/test1/scale_sweep/large/oracle
+seed=42
+support=128
+query=128
+features=64
+mb_size=10
+
+step: 4
+train_mode: baseline
+mb_score_source: oracle
+mb_injection: cls_soft_bias
+accuracy: 0.939453125
+balanced_accuracy: 0.9397615225865628
+log_loss: 0.15884636245509842
+roc_auc: 0.9867538026446534
+loss: 0.1588134765625
+mb_sparsity: 0.15625
+mb_mean_score: 0.15625
