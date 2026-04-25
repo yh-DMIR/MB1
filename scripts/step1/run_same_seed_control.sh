@@ -116,3 +116,7 @@ run_case shuffled shuffled cls_soft_bias
 run_case corr corr cls_soft_bias
 run_case mi mi cls_soft_bias
 run_case random random cls_soft_bias
+
+python "${ROOT_DIR}/src/tabicl/train/aggregate_step1_results.py" \
+  --root_dir "${OUTPUT_DIR}" \
+  --mode same_seed

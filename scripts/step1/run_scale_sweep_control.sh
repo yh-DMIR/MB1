@@ -94,3 +94,7 @@ run_scale medium 64 64 32 6 8 4
 
 # large
 run_scale large 128 128 64 10 16 8
+
+python "${ROOT_DIR}/src/tabicl/train/aggregate_step1_results.py" \
+  --root_dir "${OUTPUT_DIR}" \
+  --mode scale_sweep
