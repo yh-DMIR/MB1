@@ -1,0 +1,23 @@
+MB-TabICL Step1 Result: mi / cls_soft_bias
+==========================================
+
+checkpoint_dir=results/step1/test1_dag30_talentlike/mb_bias_init_2.0/scale_sweep/medium/mi
+seed=42
+support=256
+query=256
+features=64
+mb_size=12
+eval_num_datasets=30
+
+accuracy: 0.93515625
+balanced_accuracy: 0.9356090239935118
+log_loss: 0.14732935431761288
+loss: 0.14704793294270832
+mb_mean_score: 0.11021797098219395
+mb_sparsity: 0.078125
+roc_auc: 0.9868891678510465
+num_datasets: 30
+aggregation: mean_over_datasets
+train_mode: baseline
+mb_score_source: mi
+mb_injection: cls_soft_bias
